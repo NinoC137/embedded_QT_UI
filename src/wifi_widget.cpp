@@ -9,6 +9,8 @@ void WiFi_Widget::updateWiFiStatus(){
         qWarning() << "failed to run wpa_cli command";
         return;
     }
+
+    // qDebug("get a update signal");
     
     QString output = process.readAllStandardOutput();
     QStringList lines = output.split('\n');
@@ -58,13 +60,6 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     wifiBtn = new QPushButton(this);
     wifiBtn->setGeometry(30, 45, 160, 120);
 
-    // QLabel *wifiPic = new QLabel(this);
-    // wifiPic->setGeometry(45, 60, 60, 60);
-
-    // QLabel *ipAddr = new QLabel(this);
-    // ipAddr->setGeometry(45, 120, 121, 41);
-    // ipAddr->setAlignment(Qt::AlignCenter);
-
     wifipic = new QLabel(this);
     wifipic->setGeometry(45, 60, 60, 60);
     wifipic->setPixmap(QPixmap("../img/wifi.png"));
@@ -84,6 +79,10 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     disableMouse(wifiip);
 
     updateWiFiStatus();
+
+    //连接信号与槽
+    connect(wifiBtn, &QPushButton::clicked, 
+        this, &WiFi_Widget::updateWiFiStatus);
 }
 
 WiFi_Widget::~WiFi_Widget(){

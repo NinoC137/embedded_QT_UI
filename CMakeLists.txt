@@ -44,6 +44,7 @@ else()
     else()
         add_executable(wifi_basic
             ${PROJECT_FILES}
+            img/sys_status.png img/sys_status.svg img/wifi.png img/wifi.svg
         )
     endif()
 endif()

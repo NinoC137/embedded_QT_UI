@@ -4,11 +4,15 @@
 #include "widget.h"
 
 
-class WiFi_Widget : public QWidget{
-public:
+class WiFi_Widget : public QWidget
+{
+    Q_OBJECT
 
-    WiFi_Widget(QWidget* parent = nullptr);
+public:
+    explicit WiFi_Widget(QWidget* parent = nullptr);
     ~WiFi_Widget();
+
+private slots:
     void updateWiFiStatus();
 
 private:

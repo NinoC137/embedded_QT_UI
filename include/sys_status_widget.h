@@ -8,11 +8,15 @@ public:
     Sys_Sta_Widget(QWidget *parent = nullptr);
     ~Sys_Sta_Widget();
 
+private slots:
+    void updateSysStatus(void);
+
 private:
     QPushButton *updateBtn;
 
     QLabel *statusPic;
-    QLabel *currentState;
+    QLabel *sys_cpuUsed;
+    QLabel *sys_memUsed;
 };
 
 #endif
