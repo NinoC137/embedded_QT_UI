@@ -64,6 +64,8 @@ void WiFi_Widget::onWifiButtonClicked()
 
 
 WiFi_Widget::WiFi_Widget(QWidget* parent){
+    //TODO: 这部分字体太大了,以及图标想办法打包过去
+
     /* ---------- WiFi 区域 ---------- */
     setFixedSize(220, 220);
     setStyleSheet("background-color:rgb(191, 191, 191); border-radius: 20px;");
