@@ -15,3 +15,14 @@
 2. QT基础组件
 
 后续再检查检查, 可能更新一份dockerfile进来(其实确实没什么依赖)
+
+
+## svg转png
+
+```bash
+inkscape wifi.svg --export-type=png \
+--export-width=40 --export-height=40 \
+-o wifi.png
+```
+
+效果为将svg图片转换为40*40大小的png图片
