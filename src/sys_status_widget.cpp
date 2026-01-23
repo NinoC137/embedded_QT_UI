@@ -102,6 +102,10 @@ Sys_Sta_Widget::Sys_Sta_Widget(QWidget *parent){
     connect(updateBtn, &QPushButton::clicked,
          this, &Sys_Sta_Widget::updateSysStatus);
 
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &Sys_Sta_Widget::updateSysStatus);
+    timer->start(300); //0.3s更新一次
+
     updateSysStatus();
 }
 

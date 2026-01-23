@@ -1,14 +1,37 @@
 #include "time_widget.h"
 
 void Time_Widget::updateTime(void){
-    QDateTime utcDataTime = QDateTime::currentDateTimeUtc();
-    QDateTime current = utcDataTime.addSecs(8 * 3600); // Convert to Beijing Time (UTC+8)
+    static int net_update_count = 0;
+    
+    static QDateTime utcDataTime;
+    static QDateTime current;
+    static QTime currentTime;
+    QString timeStr;
 
-    QTime currentTime = current.time();
-    QString timeStr = QString("%1:%2:%3")
-                          .arg(currentTime.hour(), 2, 10, QChar('0'))
-                          .arg(currentTime.minute(), 2, 10, QChar('0'))
-                          .arg(currentTime.second(), 2, 10, QChar('0'));
+    if(net_update_count > 60*60 || net_update_count == 0){
+        net_update_count = 1;
+
+        // qDebug("update time from net clock");
+
+        utcDataTime = QDateTime::currentDateTimeUtc();
+        current = utcDataTime.addSecs(8 * 3600); // Convert to Beijing Time (UTC+8)
+    
+        currentTime = current.time();
+        timeStr = QString("%1:%2:%3")
+                              .arg(currentTime.hour(), 2, 10, QChar('0'))
+                              .arg(currentTime.minute(), 2, 10, QChar('0'))
+                              .arg(currentTime.second(), 2, 10, QChar('0'));
+    } else {
+        net_update_count++;
+       
+        currentTime = currentTime.addSecs(1);
+
+        timeStr = QString("%1:%2:%3")
+                              .arg(currentTime.hour(), 2, 10, QChar('0'))
+                              .arg(currentTime.minute(), 2, 10, QChar('0'))
+                              .arg(currentTime.second(), 2, 10, QChar('0'));    
+    }
+
 
     // qDebug() << "Current Time:" << timeStr;
 
@@ -53,9 +76,9 @@ Time_Widget::Time_Widget(QWidget *parent)
     vLayout->addWidget(timeLabel);
     vLayout->addWidget(dateLabel);
 
-    // QTimer *timer = new QTimer(this);
-    // connect(timer, &QTimer::timeout, this, &Time_Widget::updateTime);
-    // timer->start(1000); // Update every second
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &Time_Widget::updateTime);
+    timer->start(1000);
 
     updateTime(); // Initial update
 }
