@@ -69,45 +69,60 @@ void Sys_Sta_Widget::updateSysStatus(void){
     lb_memused->setText(membuf);
 }
 
-Sys_Sta_Widget::Sys_Sta_Widget(QWidget *parent){
+Sys_Sta_Widget::Sys_Sta_Widget(QWidget *parent)
+    : QWidget(parent)
+{
+    // 保持固定大小
     this->setFixedSize(220, 220);
 
+    // 背景暗色 + 圆角
+    setStyleSheet("background-color: #0D0D0D; border-radius: 20px;");
+
+    // ===== 主按钮 =====
     updateBtn = new QPushButton(this);
     updateBtn->setGeometry(30, 45, 160, 120);
+    updateBtn->setStyleSheet(
+        "background-color:rgb(191, 191, 191);"
+        "border-radius: 20px;"
+        "color: #f4ea2a;"      // 烫金色
+        "font-size: 24px;"
+        "padding: 10px;"
+    );
 
-    statusPic = new QLabel("sys pic", this);
-    statusPic->setGeometry(45, 60, 60, 60);
+    // ===== 状态图标 =====
+    statusPic = new QLabel(this);
+    statusPic->setGeometry(45, 50, 60, 60);
     statusPic->setPixmap(QPixmap("../img/sys_status.png"));
-    statusPic->setFixedSize(40, 40);
+    statusPic->setStyleSheet("background: transparent;");
     statusPic->setAlignment(Qt::AlignCenter);
-    statusPic->setAttribute(Qt::WA_TransparentForMouseEvents);
 
-    QFont ft;
-    ft.setPointSize(10);
-
+    // ===== CPU / Memory 标签 =====
     sys_cpuUsed = new QLabel("CPU Used", this);
-    sys_cpuUsed->setFont(ft);
-    sys_cpuUsed->setGeometry(45, 110, 130, 41);
+    sys_cpuUsed->setGeometry(45, 110, 130, 20);
     sys_cpuUsed->setAlignment(Qt::AlignCenter);
+    sys_cpuUsed->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 14px;");
 
     sys_memUsed = new QLabel("Memory Used", this);
-    sys_memUsed->setFont(ft);
-    sys_memUsed->setGeometry(45, 125, 130, 41);
+    sys_memUsed->setGeometry(45, 135, 130, 20);
     sys_memUsed->setAlignment(Qt::AlignCenter);
+    sys_memUsed->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 14px;");
 
     disableMouse(statusPic);
     disableMouse(sys_cpuUsed);
     disableMouse(sys_memUsed);
 
+    // ===== 信号槽 =====
     connect(updateBtn, &QPushButton::clicked,
          this, &Sys_Sta_Widget::updateSysStatus);
 
+    // 定时刷新
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Sys_Sta_Widget::updateSysStatus);
-    timer->start(300); //0.3s更新一次
+    timer->start(300); // 0.3s刷新一次
 
     updateSysStatus();
 }
+
 
 Sys_Sta_Widget::~Sys_Sta_Widget(){
     //在qt中,各个组件都是由parent进行统一生命周期管理的

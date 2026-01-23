@@ -6,6 +6,7 @@ Widget::Widget(QWidget *parent)
     /* ========= 顶层窗口属性 ========= */
     setFixedSize(480, 480);
     setWindowTitle("Widget");
+    setStyleSheet("background-color: #0D0D0D;");
 
     /* ========= Stack ========= */
     auto *stack = new QStackedWidget(this);

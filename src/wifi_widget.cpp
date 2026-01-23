@@ -66,9 +66,17 @@ void WiFi_Widget::onWifiButtonClicked()
 WiFi_Widget::WiFi_Widget(QWidget* parent){
     /* ---------- WiFi 区域 ---------- */
     setFixedSize(220, 220);
+    setStyleSheet("background-color:rgb(191, 191, 191); border-radius: 20px;");
 
     wifiBtn = new QPushButton(this);
     wifiBtn->setGeometry(30, 45, 160, 120);
+    wifiBtn->setStyleSheet(
+        "background-color:rgb(191, 191, 191);"
+        "border-radius: 20px;"
+        "color: #f4ea2a;"
+        "font-size: 24px;"
+        "padding: 10px;"
+    );
 
     wifipic = new QLabel(this);
     wifipic->setGeometry(45, 60, 60, 60);
@@ -80,10 +88,12 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     wifiname = new QLabel(this);
     wifiname->setGeometry(75, 90, 60, 40); 
     wifiname->setAlignment(Qt::AlignCenter);
+    wifiname->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 20px;");
 
     wifiip = new QLabel(this);
     wifiip->setGeometry(45, 120, 121, 41);
     wifiip->setAlignment(Qt::AlignCenter);
+    wifiip->setStyleSheet("color: #A9A8A8; background: transparent; font-size: 18px;");
 
     disableMouse(wifiname);
     disableMouse(wifiip);

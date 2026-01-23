@@ -54,7 +54,8 @@ Time_Widget::Time_Widget(QWidget *parent)
     timeLabel = new QLabel(__DATE__, this);
     // timeLabel->setMinimumSize(460, 110);
     timeLabel->setAlignment(Qt::AlignCenter);
-    
+    setStyleSheet("background-color: #0D0D0D; border-radius: 20px;");
+
     dateLabel = new QLabel(__TIME__, this);
     // dateLabel->setMinimumSize(460, 110);
     dateLabel->setAlignment(Qt::AlignCenter);
@@ -62,9 +63,8 @@ Time_Widget::Time_Widget(QWidget *parent)
     disableMouse(dateLabel);
     disableMouse(timeLabel);
 
-    timeLabel->setStyleSheet("font-size: 48px; font-weight: bold; color:rgb(0, 0, 0);");
-    dateLabel->setStyleSheet("font-size: 20px; color:rgb(0, 0, 0);");
-
+    timeLabel->setStyleSheet("font-size: 48px; font-weight: bold; color: #f4ea2a;");
+    dateLabel->setStyleSheet("font-size: 20px; color: #A9A8A8;");
     timeLabel->setFixedHeight(120);
     dateLabel->setFixedHeight(60);
 
