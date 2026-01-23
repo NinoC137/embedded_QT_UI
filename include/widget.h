@@ -25,8 +25,10 @@
 #include <QCheckBox>
 #include <QScreen>
 #include <QGuiApplication>
+#include <QThread>
 
 #include "virtualKeyboard.h"
+#include "wifiset.h"
 
 class QLabel;
 class QPushButton;
@@ -43,6 +45,12 @@ public:
     Widget(QWidget *parent = nullptr);
 
     //~Widget();
+
+private slots:
+    void onWifiWidgetClosed();
+
+private:
+    wifiset *wifiSetWidget;
 
 };
 #endif // WIDGET_H

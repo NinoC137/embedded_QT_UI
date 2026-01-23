@@ -1,9 +1,24 @@
 #ifndef __WIFISET_H__
 #define __WIFISET_H__   
 
-#include "widget.h"
-
+#include <QWidget>
+#include <QProcess>
+#include <QString>
+#include <QDebug>
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QDateTime>
+#include <QTimer>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QScreen>
+#include <QGuiApplication>
+#include <QThread>
+
+#include "virtualKeyboard.h"
 
 class wifiset : public QWidget{
     Q_OBJECT
@@ -12,9 +27,24 @@ public:
         uiinit();
     }
     // ~wifiset();
+
+    void scanFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onResultsFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void parseScanResults(const QString &results);
+
+signals:
+    void returnToMain();
+
 private slots:
     void onDropdownSSIDChanged(int index);
     void onLineEditClicked();
+    void onButtonConnectClicked();
+    void onButtonScanClicked();
+    void onButtonDisconClicked();
+    void on_btn_back_clicked();
+    void onScanErrorReady();
+    void onScanOutputReady();
+    
 private:
     void uiinit();
 
@@ -24,8 +54,8 @@ private:
     QProcess *m_wifiConnectProcess;
 
     QDateTime m_scanStartTime;
-    QString my_scanResult;
-    QString my_currentSSID;
+    QString m_scanResults;
+    QString m_currentSSID;
 
     QTimer *m_connectionTimer;
 

@@ -37,4 +37,18 @@ Widget::Widget(QWidget *parent)
     bottomLayout->addWidget(stateContainer);
 
     mainGrid->addLayout(bottomLayout, 2, 1);
+
+    /* ========= WiFi 设置界面 ========= */
+    // 关闭wifi设置界面返回主界面信号槽连接
+    wifiSetWidget = new wifiset(this);
+    connect(wifiSetWidget,&wifiset::returnToMain,this,&Widget::onWifiWidgetClosed);
+}
+
+void Widget::onWifiWidgetClosed()
+{
+    if (wifiSetWidget) {
+        wifiSetWidget->hide();  // 隐藏子界面
+    }
+
+    this->show();  // 回到主界面
 }

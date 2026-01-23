@@ -1,5 +1,88 @@
 #include "wifiset.h"
 
+#define MAX_CONF_LEN 256
+#define MAX_LINE_LEN 256
+#define WPA_FILE_PATH "/etc/wpa_supplicant/wpa_supplicant.conf"
+
+static void *wifi_connect_thread_handler(void *arg);
+void wificonnect(const char* ssid, const char* password);
+
+struct WifiNetwork {
+    QString ssid;
+    int signalLevel;
+    QString flags;
+};
+
+typedef struct {
+    char ssid[64];
+    char passwd[64];
+} wifi_connect_info_t;
+
+QVector<WifiNetwork> m_wifiNetworks;
+
+void wifiset::onResultsFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (exitStatus == QProcess::NormalExit && exitCode == 0) {
+        // 解析扫描结果
+        parseScanResults(m_scanResults);
+    } else {
+        m_dropdownSSID->clear();
+        m_dropdownSSID->addItem("Failed to get results (exit code: " + QString::number(exitCode) + ")");
+    }
+
+    m_scanResults.clear();
+}
+
+void wifiset::parseScanResults(const QString &results)
+{
+    m_wifiNetworks.clear();
+
+    // 按行分割结果
+    QStringList lines = results.split('\n');
+
+    // 跳过标题行
+    if (lines.size() > 1) {
+        for (int i = 1; i < lines.size(); i++) {
+            QString line = lines[i].trimmed();
+            if (line.isEmpty()) continue;
+
+            // 按制表符分割每行数据
+            QStringList fields = line.split('\t', QString::SkipEmptyParts);
+            if (fields.size() >= 5) {
+                WifiNetwork network;
+                network.ssid = fields[4];
+                network.signalLevel = fields[2].toInt();
+                network.flags = fields[3];
+
+                // 过滤空SSID
+                if (!network.ssid.isEmpty()) {
+                    m_wifiNetworks.append(network);
+                }
+            }
+        }
+    }
+}
+
+
+//槽函数实现
+void wifiset::onDropdownSSIDChanged(int index)
+{
+    if (index >= 0 && index < m_wifiNetworks.size()) {
+        // 获取选中的WiFi网络信息
+        const WifiNetwork &network = m_wifiNetworks[index];
+
+        // 更新文本框显示SSID
+        m_textAreaSSID->setText(network.ssid);
+        m_textAreaRSSI->setText(QString::number(network.signalLevel) + " dBm");
+        m_textAreaMgnt->setText(network.flags);
+    } else {
+        // 未选择有效网络时清空文本框
+        m_textAreaSSID->clear();
+        m_textAreaRSSI->clear();
+        m_textAreaMgnt->clear();
+    }
+}
+
 void wifiset::uiinit()
 {
     // 设置主窗口背景颜色
@@ -98,7 +181,68 @@ void wifiset::uiinit()
     btnLayout->addWidget(buttonBack);
     mainLayout->addWidget(panelBtn,1);
 
+    //创建虚拟键盘
+    m_virtualKeyboard = new VirtualKeyboard(this);
+    m_virtualKeyboard->hide();
+    connect(m_virtualKeyboard, &VirtualKeyboard::closed, m_virtualKeyboard, &QWidget::hide);
+    //唤起虚拟键盘
     connect(m_textAreaPW, &QLineEdit::selectionChanged, this, &wifiset::onLineEditClicked);
+    //构造函数中链接信号与槽
+    connect(m_dropdownSSID, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &wifiset::onDropdownSSIDChanged);
+
+
+}
+
+void wifiset::onScanOutputReady()
+{
+    if(m_wifiScanProcess)
+        m_scanResults += m_wifiScanProcess->readAllStandardOutput();
+}
+
+void wifiset::onScanErrorReady()
+{
+    if(m_wifiScanProcess)
+        qDebug() << "Scan error:" << m_wifiScanProcess->readAllStandardError();
+}
+
+
+void wifiset::scanFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (exitStatus == QProcess::NormalExit && exitCode == 0) {
+        // 扫描命令成功，等待一段时间后获取结果
+        QTimer::singleShot(3000, this, [this]() {
+            // 执行scan_results命令获取扫描结果
+            QProcess *resultsProcess = new QProcess(this);
+            connect(resultsProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                    this, &wifiset::onResultsFinished);
+            connect(resultsProcess, &QProcess::readyReadStandardOutput, this, [resultsProcess, this]() {
+                m_scanResults += resultsProcess->readAllStandardOutput();
+            });
+
+            resultsProcess->start("wpa_cli", QStringList() << "-i" << "wlan0" << "scan_results");
+        });
+    } else {
+        // 扫描命令失败
+        m_dropdownSSID->clear();
+        m_dropdownSSID->addItem("Scan failed (exit code: " + QString::number(exitCode) + ")");
+    }
+}
+
+void wifiset::onButtonScanClicked()
+{
+    m_dropdownSSID->clear();
+    m_dropdownSSID->addItem("Scanning...");
+
+    // 记录当前时间，用于超时判断
+    m_scanStartTime = QDateTime::currentDateTime();
+
+    m_wifiScanProcess = new QProcess(this);
+    connect(m_wifiScanProcess, &QProcess::readyReadStandardOutput, this, &wifiset::onScanOutputReady);
+    connect(m_wifiScanProcess, &QProcess::readyReadStandardError, this, &wifiset::onScanErrorReady);
+    connect(m_wifiScanProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),this,&wifiset::scanFinished);
+
+    m_wifiScanProcess->start("wpa_cli", QStringList() << "-i" << "wlan0" << "scan");
 }
 
 
@@ -126,4 +270,167 @@ void wifiset::onLineEditClicked()
         // 显示键盘
         m_virtualKeyboard->show();
     }
+}
+
+static void *wifi_connect_thread_handler(void *arg)
+{
+    wifi_connect_info_t *wifi = (wifi_connect_info_t *)arg;
+
+    wificonnect(wifi->ssid, wifi->passwd);
+    free(wifi);
+
+    return NULL;
+}
+
+void wificonnect(const char* ssid, const char* password)
+{
+    qDebug() << "ssid" << ssid << " " << "password"<< password;
+    FILE *wpa_supplicant_pipe;
+    char buffer[MAX_CONF_LEN];
+
+    // open wpa_supplicant pipe
+    wpa_supplicant_pipe = popen("wpa_cli", "w");
+    if (wpa_supplicant_pipe == NULL) {
+        perror("popen");
+        exit(1);
+    }
+    printf("connect test\n");
+    // set network ssid adn psk
+    memset(buffer,0,MAX_CONF_LEN);
+    snprintf(buffer, MAX_CONF_LEN, "set_network 0 ssid \"%s\"\n", ssid);
+    fputs(buffer, wpa_supplicant_pipe);
+
+    memset(buffer,0,MAX_CONF_LEN);
+    snprintf(buffer, MAX_CONF_LEN, "set_network 0 psk \"%s\"\n", password);
+    fputs(buffer, wpa_supplicant_pipe);
+
+    // save wifi conf
+    fputs("save_config\n", wpa_supplicant_pipe);
+    pclose(wpa_supplicant_pipe);
+
+    // save wifi conf to /etc/wpa_supplicant.conf
+    FILE *file = fopen(WPA_FILE_PATH, "r");
+    if (file == NULL) {
+        printf("Failed to open file.\n");
+        return ;
+    }
+
+    FILE *temp_file = fopen("temp_wpa_supplicant.conf", "w");
+    if (temp_file == NULL) {
+        printf("Failed to create temporary file.\n");
+        fclose(file);
+        return ;
+    }
+
+    char line[MAX_LINE_LEN];
+    int inside_network_block = 0;
+
+    while (fgets(line, MAX_LINE_LEN, file)) {
+        // Enter network={} block
+        if (strstr(line, "network={")) {
+            inside_network_block = 1;
+            fputs(line, temp_file);
+            continue;
+        }
+        // Exit network={} block
+        if (strstr(line, "}")) {
+            inside_network_block = 0;
+        }
+        // Inside network={} block
+        if (inside_network_block) {
+            if (strstr(line, "ssid=")) {
+                memset(buffer,0,MAX_CONF_LEN);
+                sprintf(buffer, "        ssid=\"%s\"\n",ssid);
+                fputs(buffer, temp_file);
+            }
+            else if (strstr(line, "psk=")) {
+                memset(buffer,0,MAX_CONF_LEN);
+                sprintf(buffer, "        psk=\"%s\"\n",password);
+                fputs(buffer, temp_file);
+            }
+            else {
+                fputs(line, temp_file);
+            }
+        }
+        else {
+            fputs(line, temp_file);
+        }
+    }
+
+    fclose(file);
+    fclose(temp_file);
+
+    remove(WPA_FILE_PATH);
+    rename("temp_wpa_supplicant.conf", WPA_FILE_PATH);
+    //printf("SSID and PSK replaced successfully.\n");
+
+    // reconnect wifi
+    // system("killall -9 wpa_cli");
+    system("killall -9 wpa_supplicant");
+    system("killall -9 udhcpc");
+
+    QThread::sleep(1);
+    system("wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf");
+    QThread::sleep(1);
+    system("wpa_cli reconfigure &");
+    QThread::sleep(5);
+    system("udhcpc -i wlan0 &");
+    return ;
+}
+
+void wifiset::onButtonConnectClicked()
+{
+    int index = m_dropdownSSID->currentIndex();
+    if(index < 0 || index >= m_wifiNetworks.size())
+    {
+        qDebug() << "connect failed";
+        return;
+    }
+
+    m_currentSSID = m_wifiNetworks[index].ssid;
+    QString passwd = m_textAreaPW->text();
+
+    if (passwd.isEmpty() && !m_wifiNetworks[index].flags.contains("open", Qt::CaseInsensitive)) {
+        qDebug() << "input passwd";
+        return;
+    }
+
+    if(!m_currentSSID.isEmpty() &&
+            passwd.length() >= 8 &&
+            passwd.length() < 64)
+    {
+        wifi_connect_info_t *wifi = (wifi_connect_info_t *)malloc(sizeof(wifi_connect_info_t));
+        ::strcpy(wifi->ssid, m_currentSSID.toUtf8().constData());
+        ::strcpy(wifi->passwd, passwd.toUtf8().constData());
+
+        pthread_t wifi_connect_thread;
+        pthread_create(&wifi_connect_thread, NULL, wifi_connect_thread_handler, wifi);
+        pthread_detach(wifi_connect_thread);
+        qDebug() << "passwd is" << passwd;
+    }
+}
+
+void wifiset::onButtonDisconClicked()
+{
+    char command[128];
+    snprintf(command, sizeof(command), "wpa_cli -i %s disconnect", "wlan0");
+    int ret = system(command);
+    if (ret == -1) {
+        perror("system");
+        return;
+    }
+
+    snprintf(command, sizeof(command), "ifconfig %s 0.0.0.0", "wlan0");
+    ret = system(command);
+    if (ret == -1) {
+        perror("system");
+        return;
+    }
+
+    return;
+}
+
+void wifiset::on_btn_back_clicked()
+{
+    emit returnToMain();
 }
