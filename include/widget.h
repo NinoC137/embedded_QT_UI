@@ -20,6 +20,14 @@
 #include <QRegularExpression>
 #include <QTimer>
 
+#include <QComboBox>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QScreen>
+#include <QGuiApplication>
+
+#include "virtualKeyboard.h"
+
 class QLabel;
 class QPushButton;
 
