@@ -68,7 +68,7 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     wifipic->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     wifiname = new QLabel(this);
-    wifiname->setGeometry(75, 90, 60, 40);
+    wifiname->setGeometry(75, 90, 60, 40); 
     wifiname->setAlignment(Qt::AlignCenter);
 
     wifiip = new QLabel(this);

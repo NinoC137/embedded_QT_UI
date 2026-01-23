@@ -53,6 +53,7 @@ static double getCPUinfo(){
     }
 }
 
+
 void Sys_Sta_Widget::updateSysStatus(void){
     QLabel* lb_cpuused = this->sys_cpuUsed;
     QLabel* lb_memused = this->sys_memUsed;

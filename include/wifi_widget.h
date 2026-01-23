@@ -15,7 +15,7 @@ public:
 private slots:
     void updateWiFiStatus();
 
-private:
+private: 
     QPushButton *wifiBtn;
     
     QLabel *wifipic;

@@ -2,6 +2,7 @@
 
 #include "wifi_widget.h"
 #include "sys_status_widget.h"
+#include "time_widget.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -11,24 +12,15 @@ Widget::Widget(QWidget *parent)
     setWindowTitle("Widget");
 
     auto *mainGrid = new QGridLayout(this);
-    mainGrid->setSizeConstraint(QLayout::SetFixedSize);
+    // mainGrid->setSizeConstraint(QLayout::SetFixedSize);
 
-    /* ========= 上层：时间 + 日期 ========= */
+    /* ========= 上层：时间 + 日期 ========= */    
+    Time_Widget *timeContainer = new Time_Widget(this);
+    
     auto *timeLayout = new QVBoxLayout;
-
-    QLabel *time = new QLabel(__DATE__, this);
-    time->setMinimumSize(460, 110);
-    time->setAlignment(Qt::AlignCenter);
-
-    QLabel *date = new QLabel(__TIME__, this);
-    date->setMinimumSize(460, 110);
-    date->setAlignment(Qt::AlignCenter);
-
-
-    timeLayout->addWidget(time);
-    timeLayout->addWidget(date);
-
-    mainGrid->addLayout(timeLayout, 0, 1);
+    timeLayout->addWidget(timeContainer);
+    mainGrid->addLayout(timeLayout, 0, 0, 2, 2);
+    // mainGrid->addWidget(timeContainer, 0, 0, 2, 2);
 
     /* ========= 下层：wifi + state ========= */
     auto *bottomLayout = new QHBoxLayout;

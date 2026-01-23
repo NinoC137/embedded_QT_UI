@@ -18,6 +18,7 @@
 #include <QPixmap>
 #include <QFile>
 #include <QRegularExpression>
+#include <QTimer>
 
 class QLabel;
 class QPushButton;
