@@ -11,8 +11,12 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
 {
     // 键盘样式
     setStyleSheet("background-color: #1F1F1F; border-radius: 10px;");
-    setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_TranslucentBackground);
+
+    // setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+    // setAttribute(Qt::WA_TranslucentBackground);
+
+    setAttribute(Qt::WA_NoSystemBackground);
+    setFocusPolicy(Qt::NoFocus);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
@@ -31,7 +35,7 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
                         "background-color: #404040;"
                         "border-radius: 10px;"
                         "color: rgb(227, 181, 5);"
-                        "font-size: 24px;"
+                        "font-size: 16px;"
                         "padding: 10px;"
                         );
             button->setFocusPolicy(Qt::NoFocus);
@@ -50,7 +54,7 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
                 "background-color: #f0f0f0;"
                 "border-radius: 10px;"
                 "color: rgb(0, 0, 0);"
-                "font-size: 24px;"
+                "font-size: 16px;"
                 "padding: 10px;"
                 );
     backspaceBtn->setFocusPolicy(Qt::NoFocus);
@@ -62,7 +66,7 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
                 "background-color: #f0f0f0;"
                 "border-radius: 10px;"
                 "color: rgb(0, 0, 0);"
-                "font-size: 24px;"
+                "font-size: 16px;"
                 "padding: 10px;"
                 );
     spaceBtn->setFocusPolicy(Qt::NoFocus);
@@ -74,7 +78,7 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
                 "background-color: #f0f0f0;"
                 "border-radius: 10px;"
                 "color: rgb(0, 0, 0);"
-                "font-size: 24px;"
+                "font-size: 16px;"
                 "padding: 10px;"
                 );
     enterBtn->setFocusPolicy(Qt::NoFocus);
@@ -86,7 +90,7 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
                 "background-color: #f0f0f0;"
                 "border-radius: 10px;"
                 "color: rgb(0, 0, 0);"
-                "font-size: 24px;"
+                "font-size: 16px;"
                 "padding: 10px;"
                 );
     closeBtn->setFocusPolicy(Qt::NoFocus);
@@ -96,11 +100,26 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
     mainLayout->addLayout(funcLayout);
 
     // 设置固定大小
-    QScreen *screen = QGuiApplication::primaryScreen();
-    QRect screenGeometry = screen->geometry();
-    int keyboardWidth = screenGeometry.width();
-    int keyboardHeight = 350;
-    setFixedSize(keyboardWidth, keyboardHeight);
+    // QScreen *screen = window()->screen();
+    // QRect screenGeometry = screen->availableGeometry();
+    // int keyboardWidth = screenGeometry.width();
+    // int keyboardHeight = 350;
+    // setFixedSize(keyboardWidth, keyboardHeight);
+
+    if(parent){
+        int keyboardWidth = KEYBOARDWIDTH;
+        int keyboardHeight = KEYBOARDHEIGHT;
+        setFixedSize(keyboardWidth, keyboardHeight);
+    }else{
+        qDebug("VirtualKeyboard: parent is null, cannot set size based on parent.");
+        return;
+        // QScreen *screen = QGuiApplication::primaryScreen();
+        // QRect screenGeometry = screen->availableGeometry();
+        // int keyboardWidth = screenGeometry.width();
+        // int keyboardHeight = 350;
+        // setFixedSize(keyboardWidth, keyboardHeight);
+    }
+
 }
 
 void VirtualKeyboard::setTargetLineEdit(QLineEdit *target)

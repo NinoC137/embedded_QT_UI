@@ -23,9 +23,7 @@
 class wifiset : public QWidget{
     Q_OBJECT
 public:
-    wifiset(QWidget *parent = nullptr) : QWidget(parent){ 
-        uiinit();
-    }
+    wifiset(QWidget *parent = nullptr); 
     // ~wifiset();
 
     void scanFinished(int exitCode, QProcess::ExitStatus exitStatus);
@@ -46,7 +44,6 @@ private slots:
     void onScanOutputReady();
     
 private:
-    void uiinit();
 
     VirtualKeyboard *m_virtualKeyboard;
 

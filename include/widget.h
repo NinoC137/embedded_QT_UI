@@ -26,8 +26,12 @@
 #include <QScreen>
 #include <QGuiApplication>
 #include <QThread>
+#include <QStackedWidget>
 
 #include "virtualKeyboard.h"
+#include "wifi_widget.h"
+#include "sys_status_widget.h"
+#include "time_widget.h"
 #include "wifiset.h"
 
 class QLabel;
@@ -45,12 +49,15 @@ public:
     Widget(QWidget *parent = nullptr);
 
     //~Widget();
-
 private slots:
     void onWifiWidgetClosed();
+    void showMainPage();
+    void showWifiSettings();
 
 private:
-    wifiset *wifiSetWidget;
-
+    QStackedWidget *stack;
+    QWidget        *mainPage;
+    WiFi_Widget    *wifiWidget;
+    wifiset        *wifiSetWidget;
 };
 #endif // WIDGET_H

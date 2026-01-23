@@ -1,7 +1,18 @@
 #ifndef WIFI_WIDGET_H
 #define WIFI_WIDGET_H
 
-#include "widget.h"
+#include <QWidget>
+
+#include <QProcess>
+#include <QString>
+#include <QDebug>
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+
+#include "wifiset.h"
 
 
 class WiFi_Widget : public QWidget
@@ -12,8 +23,12 @@ public:
     explicit WiFi_Widget(QWidget* parent = nullptr);
     ~WiFi_Widget();
 
+signals:
+    void requestOpenWifiSettings();
+
 private slots:
     void updateWiFiStatus();
+    void onWifiButtonClicked();
 
 private: 
     QPushButton *wifiBtn;
@@ -22,6 +37,7 @@ private:
 
     QLabel *wifiname;
     QLabel *wifiip;
+    
 };
 
 #endif // WIFI_WIDGET_H

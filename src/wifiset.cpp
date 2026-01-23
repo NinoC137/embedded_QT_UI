@@ -47,7 +47,7 @@ void wifiset::parseScanResults(const QString &results)
             if (line.isEmpty()) continue;
 
             // 按制表符分割每行数据
-            QStringList fields = line.split('\t', QString::SkipEmptyParts);
+            QStringList fields = line.split('\t', Qt::SkipEmptyParts);
             if (fields.size() >= 5) {
                 WifiNetwork network;
                 network.ssid = fields[4];
@@ -83,7 +83,8 @@ void wifiset::onDropdownSSIDChanged(int index)
     }
 }
 
-void wifiset::uiinit()
+wifiset::wifiset(QWidget* parent)
+    : QWidget(parent)
 {
     // 设置主窗口背景颜色
     setStyleSheet("background-color: #0D0D0D;");
@@ -121,7 +122,7 @@ void wifiset::uiinit()
     QHBoxLayout *pwLayout = new QHBoxLayout();
     QLabel *labelPW = new QLabel("Passwd", infoWidget);
     labelPW->setStyleSheet("color: #FFFFFF; font-size: 48px;");
-    m_textAreaPW = new QLineEdit("waveshare0755", infoWidget);
+    m_textAreaPW = new QLineEdit("*******", infoWidget);
     m_textAreaPW->setStyleSheet("color: #A9A8A8; font-size: 32px; background-color: rgba(255, 255, 255, 15); border: 1px solid rgba(255, 255, 255, 25); padding: 10px 20px;border-radius: 10px;");
     pwLayout->addWidget(labelPW,1);
     pwLayout->addWidget(m_textAreaPW,3);
@@ -152,8 +153,8 @@ void wifiset::uiinit()
             "background-color: #404040;"
             "border-radius: 80px;"  // 增加圆角半径，使按钮更加圆润
             "color: rgb(227, 181, 5);"  // 烫金色字体
-            "font-size: 24px;"
-            "padding: 10px 40px;";  // 增加左右内边距，使按钮宽度增加
+            "font-size: 20px;"
+            "padding: 10px 10px;";  // 增加左右内边距，使按钮宽度增加
 
     // 创建按钮面板
     QWidget *panelBtn = new QWidget(this);
@@ -185,6 +186,7 @@ void wifiset::uiinit()
     m_virtualKeyboard = new VirtualKeyboard(this);
     m_virtualKeyboard->hide();
     connect(m_virtualKeyboard, &VirtualKeyboard::closed, m_virtualKeyboard, &QWidget::hide);
+
     //唤起虚拟键盘
     connect(m_textAreaPW, &QLineEdit::selectionChanged, this, &wifiset::onLineEditClicked);
     //构造函数中链接信号与槽
@@ -254,18 +256,18 @@ void wifiset::onLineEditClicked()
         m_virtualKeyboard->setTargetLineEdit(lineEdit);
 
         // 计算屏幕尺寸
-        QScreen *screen = QGuiApplication::primaryScreen();
-        QRect screenGeometry = screen->geometry();
+        // QScreen *screen = QGuiApplication::primaryScreen();
+        // QRect screenGeometry = screen->geometry();
 
         // 计算键盘位置（屏幕底部中央）
+        QRect screenGeometry = parentWidget()->geometry();
         int keyboardWidth = m_virtualKeyboard->width();
         int keyboardHeight = m_virtualKeyboard->height();
         int x = (screenGeometry.width() - keyboardWidth) / 2;
         int y = screenGeometry.height() - keyboardHeight;
 
         // 将坐标转换为相对于当前窗口的坐标
-        QPoint pos = mapFromGlobal(QPoint(x, y));
-        m_virtualKeyboard->move(pos);
+        m_virtualKeyboard->move(x,y);
 
         // 显示键盘
         m_virtualKeyboard->show();

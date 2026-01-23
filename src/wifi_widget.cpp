@@ -1,5 +1,9 @@
 #include "wifi_widget.h"
 
+static inline auto disableMouse = [](QWidget *w) {
+    w->setAttribute(Qt::WA_TransparentForMouseEvents);
+};
+
 void WiFi_Widget::updateWiFiStatus(){
     QLabel* lb_wifiname = this->wifiname;
     QLabel* lb_wifiip = this->wifiip;
@@ -53,6 +57,12 @@ void WiFi_Widget::updateWiFiStatus(){
     }
 }
 
+void WiFi_Widget::onWifiButtonClicked()
+{
+
+}
+
+
 WiFi_Widget::WiFi_Widget(QWidget* parent){
     /* ---------- WiFi 区域 ---------- */
     setFixedSize(220, 220);
@@ -83,6 +93,11 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     //连接信号与槽
     connect(wifiBtn, &QPushButton::clicked, 
         this, &WiFi_Widget::updateWiFiStatus);
+
+    //lamda表达式,上抛信号
+    connect(wifiBtn, &QPushButton::clicked, this, [this]() {
+        emit requestOpenWifiSettings();
+    });
 }
 
 WiFi_Widget::~WiFi_Widget(){
