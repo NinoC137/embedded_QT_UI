@@ -63,6 +63,12 @@ void wifiset::parseScanResults(const QString &results)
             }
         }
     }
+
+    // 更新下拉菜单
+    m_dropdownSSID->clear();
+    for (const WifiNetwork &network : qAsConst(m_wifiNetworks)) {
+        m_dropdownSSID->addItem(network.ssid);  
+    }
 }
 
 
