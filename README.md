@@ -38,6 +38,13 @@ make
 
 后续再检查检查, 可能更新一份dockerfile进来(其实确实没什么依赖)
 
+## Systemd自启动
+
+在顶层目录的 `my_qtScreen.service`中
+
+将其`mv`到`/etc/systemd/system`中, 然后激活它即可.
+
+注意: 需要有这个service才能令reboot调试按键生效,否则就直接退出不重启了
 
 ## svg转png
 

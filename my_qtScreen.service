@@ -1,0 +1,22 @@
+[Unit]
+Description=MyQt Screen Auto Start Service
+After=network.target sysinit.target
+After=systemd-user-sessions.service 
+
+[Service]
+Type=idle
+ExecStart=/root/wifi_basic -platform linuxfb 
+Restart=always
+RestartSec=10
+WorkingDirectory=/usr/local/bin
+
+# 设置环境变量
+Environment="PATH=/opt/qt5.15/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="LD_LIBRARY_PATH=/opt/qt5.15/lib"
+
+# 如果是 framebuffer 应用，可确保启动在控制台
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
