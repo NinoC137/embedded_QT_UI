@@ -6,9 +6,6 @@
 #include <QLineEdit>
 #include <QList>
 
-#define KEYBOARDWIDTH 460
-#define KEYBOARDHEIGHT 220
-
 class VirtualKeyboard : public QWidget
 {
     Q_OBJECT

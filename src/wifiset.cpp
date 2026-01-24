@@ -1,5 +1,7 @@
 #include "wifiset.h"
 
+#include <QDebug>
+
 #define MAX_CONF_LEN 256
 #define MAX_LINE_LEN 256
 #define WPA_FILE_PATH "/etc/wpa_supplicant/wpa_supplicant.conf"
@@ -254,6 +256,8 @@ void wifiset::onLineEditClicked()
     if (lineEdit) {
         // 设置当前目标LineEdit
         m_virtualKeyboard->setTargetLineEdit(lineEdit);
+
+        // qDebug() << "VK parent:" << parentWidget();
 
         // 计算屏幕尺寸
         // QScreen *screen = QGuiApplication::primaryScreen();

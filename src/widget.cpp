@@ -15,6 +15,9 @@ Widget::Widget(QWidget *parent)
      *  Page 0 : 主界面（Time + WiFi + State）
      * ========================================================= */
     QWidget *mainPage = new QWidget(stack);
+    mainPage->setAutoFillBackground(true);
+    mainPage->setStyleSheet("background-color: #0D0D0D;");
+
     auto *mainGrid = new QGridLayout(mainPage);
 
     /* ========= 上层：时间 + 日期 ========= */
@@ -41,6 +44,9 @@ Widget::Widget(QWidget *parent)
      *  Page 1 : WiFi 设置界面
      * ========================================================= */
     wifiset *wifiSetWidget = new wifiset(stack);
+    wifiSetWidget->setAutoFillBackground(true);
+    wifiSetWidget->setStyleSheet("background-color: #0D0D0D;");
+
 
     /* ========= Stack 注册 ========= */
     stack->addWidget(mainPage);      // index 0

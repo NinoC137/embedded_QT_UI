@@ -100,12 +100,12 @@ Sys_Sta_Widget::Sys_Sta_Widget(QWidget *parent)
     sys_cpuUsed = new QLabel("CPU Used", this);
     sys_cpuUsed->setGeometry(45, 110, 130, 20);
     sys_cpuUsed->setAlignment(Qt::AlignCenter);
-    sys_cpuUsed->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 14px;");
+    sys_cpuUsed->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 12px;");
 
     sys_memUsed = new QLabel("Memory Used", this);
     sys_memUsed->setGeometry(45, 135, 130, 20);
     sys_memUsed->setAlignment(Qt::AlignCenter);
-    sys_memUsed->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 14px;");
+    sys_memUsed->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 12px;");
 
     disableMouse(statusPic);
     disableMouse(sys_cpuUsed);

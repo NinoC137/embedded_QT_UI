@@ -90,12 +90,12 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     wifiname = new QLabel(this);
     wifiname->setGeometry(75, 90, 60, 40); 
     wifiname->setAlignment(Qt::AlignCenter);
-    wifiname->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 20px;");
+    wifiname->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 12px;");
 
     wifiip = new QLabel(this);
     wifiip->setGeometry(45, 120, 121, 41);
     wifiip->setAlignment(Qt::AlignCenter);
-    wifiip->setStyleSheet("color: #A9A8A8; background: transparent; font-size: 18px;");
+    wifiip->setStyleSheet("color: #A9A8A8; background: transparent; font-size: 10px;");
 
     disableMouse(wifiname);
     disableMouse(wifiip);

@@ -4,28 +4,33 @@
 #include <QHBoxLayout>
 #include <QScreen>
 #include <QGuiApplication>
+#include <QDebug>
+
+#define KEYBOARDWIDTH 480
+#define KEYBOARDHEIGHT 220
 
 VirtualKeyboard::VirtualKeyboard(QWidget *parent)
-    : QWidget(parent),
-      m_targetLineEdit(nullptr)
+    : QWidget(parent)
 {
-    // 键盘样式
-    setStyleSheet("background-color: #1F1F1F; border-radius: 10px;");
-
+    m_targetLineEdit = nullptr;
+    
     // setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
     // setAttribute(Qt::WA_TranslucentBackground);
-
-    setAttribute(Qt::WA_NoSystemBackground);
     setFocusPolicy(Qt::NoFocus);
+    
+    QWidget *container = new QWidget(this);
+    // 键盘样式
+    container->setStyleSheet("background-color: #2A2A2A; border-radius: 15px;");
+    container->setFixedSize(KEYBOARDWIDTH, KEYBOARDHEIGHT);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-
+    QVBoxLayout *mainLayout = new QVBoxLayout(container);
+    
     // 键位定义
     QList<QString> keyRows;
     keyRows << "1234567890"
             << "qwertyuiop"
             << "asdfghjkl"
-            << "_-zxcvbnm,.";
+            << "+-zxcvbnm_.";
 
     for (const QString &row : keyRows) {
         QHBoxLayout *rowLayout = new QHBoxLayout();
@@ -35,7 +40,7 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
                         "background-color: #404040;"
                         "border-radius: 10px;"
                         "color: rgb(227, 181, 5);"
-                        "font-size: 16px;"
+                        "font-size: 12px;"
                         "padding: 10px;"
                         );
             button->setFocusPolicy(Qt::NoFocus);
@@ -110,6 +115,8 @@ VirtualKeyboard::VirtualKeyboard(QWidget *parent)
         int keyboardWidth = KEYBOARDWIDTH;
         int keyboardHeight = KEYBOARDHEIGHT;
         setFixedSize(keyboardWidth, keyboardHeight);
+        // qDebug() << "VK parent:" << parentWidget();
+        // qDebug() << "VK geometry:" << geometry();
     }else{
         qDebug("VirtualKeyboard: parent is null, cannot set size based on parent.");
         return;
