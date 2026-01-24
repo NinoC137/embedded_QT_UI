@@ -53,6 +53,7 @@ private slots:
     void onWifiWidgetClosed();
     void showMainPage();
     void showWifiSettings();
+    void onReboot();
 
 private:
     QStackedWidget *stack;

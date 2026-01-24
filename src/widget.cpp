@@ -19,12 +19,31 @@ Widget::Widget(QWidget *parent)
     mainPage->setStyleSheet("background-color: #0D0D0D;");
 
     auto *mainGrid = new QGridLayout(mainPage);
-
+    
+    /* =======================关闭程序定时重启==============================*/
+    QString buttonStyle =
+        "background-color:rgb(203, 40, 40);"
+        "border-radius: 80px;"  // 增加圆角半径，使按钮更加圆润
+        "color: rgb(227, 181, 5);"  // 烫金色字体
+        "font-size: 20px;"
+        "padding: 10px 10px;";  // 增加左右内边距，使按钮宽度增加
+    // 创建按钮面板
+    
     /* ========= 上层：时间 + 日期 ========= */
-    Time_Widget *timeContainer = new Time_Widget(mainPage);
     auto *timeLayout = new QVBoxLayout;
+    Time_Widget *timeContainer = new Time_Widget(mainPage);
+    
+    auto *RebootBtnLayout = new QHBoxLayout;
+    QPushButton *buttonReboot = new QPushButton("Reboot", mainPage);
+    buttonReboot->setStyleSheet(buttonStyle);
+    RebootBtnLayout->addWidget(new QWidget(mainPage)); // 占位，左侧空白
+    RebootBtnLayout->addWidget(buttonReboot);
+    RebootBtnLayout->addWidget(new QWidget(mainPage)); // 占位，右侧空白
+    connect(buttonReboot, SIGNAL(clicked()), this, SLOT(onReboot()));  
+    
+    timeLayout->addLayout(RebootBtnLayout);
     timeLayout->addWidget(timeContainer);
-    mainGrid->addLayout(timeLayout, 0, 0, 2, 2);
+    mainGrid->addLayout(timeLayout, 1, 0, 2, 2);
 
     /* ========= 下层：wifi + state ========= */
     auto *bottomLayout = new QHBoxLayout;
@@ -38,7 +57,7 @@ Widget::Widget(QWidget *parent)
     Sys_Sta_Widget *stateContainer = new Sys_Sta_Widget(mainPage);
     bottomLayout->addWidget(stateContainer);
 
-    mainGrid->addLayout(bottomLayout, 2, 1);
+    mainGrid->addLayout(bottomLayout, 3, 0);
 
     /* =========================================================
      *  Page 1 : WiFi 设置界面
@@ -97,4 +116,16 @@ void Widget::onWifiWidgetClosed()
     }
 
     this->show();  // 回到主界面
+}
+
+void Widget::onReboot()
+{
+    QString appPath = QCoreApplication::applicationFilePath();
+
+    QProcess::startDetached(
+        "bash",
+        QStringList() << "-c" << QString("sleep 1 && exec %1").arg(appPath)
+    );
+
+    qApp->quit();
 }
