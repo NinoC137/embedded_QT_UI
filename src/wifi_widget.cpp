@@ -45,14 +45,14 @@ void WiFi_Widget::updateWiFiStatus(){
         lb_wifiip->setStyleSheet("color= #ffffff; background: transparent; border: none;");
     }else{
         lb_wifiname->setText(ssid);
-        lb_wifiname->setStyleSheet("color: #f4ea2a; background: transparent; border: none;");
+        lb_wifiname->setStyleSheet("color: #f4ea2a; background: transparent; border: none; font-size: 16px;");
         
         if(ip.isEmpty()){
             lb_wifiip->setText("No ip");
             lb_wifiip->setStyleSheet("color: #f4ea2a; background: transparent; border: none;");
         }else{
             lb_wifiip->setText(ip);
-            lb_wifiip->setStyleSheet("color: #f4ea2a; background: transparent; border: none;");
+            lb_wifiip->setStyleSheet("color: #f4ea2a; background: transparent; border: none; font-size: 14px;");
         }
     }
 }
@@ -64,8 +64,6 @@ void WiFi_Widget::onWifiButtonClicked()
 
 
 WiFi_Widget::WiFi_Widget(QWidget* parent){
-    //TODO: 这部分字体太大了,以及图标想办法打包过去
-
     /* ---------- WiFi 区域 ---------- */
     setFixedSize(220, 220);
     setStyleSheet("background-color:rgb(191, 191, 191); border-radius: 20px;");
@@ -81,14 +79,14 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     );
 
     wifipic = new QLabel(this);
-    wifipic->setGeometry(45, 60, 60, 60);
+    wifipic->setGeometry(45, 52, 60, 60);
     wifipic->setPixmap(QPixmap("../img/wifi.png"));
     wifipic->setFixedSize(40, 40);
     wifipic->setAlignment(Qt::AlignCenter);
     wifipic->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     wifiname = new QLabel(this);
-    wifiname->setGeometry(75, 90, 60, 40); 
+    wifiname->setGeometry(45, 90, 120, 40); 
     wifiname->setAlignment(Qt::AlignCenter);
     wifiname->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 12px;");
 

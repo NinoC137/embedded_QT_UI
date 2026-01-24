@@ -91,7 +91,7 @@ Sys_Sta_Widget::Sys_Sta_Widget(QWidget *parent)
 
     // ===== 状态图标 =====
     statusPic = new QLabel(this);
-    statusPic->setGeometry(45, 50, 60, 60);
+    statusPic->setGeometry(45, 45, 60, 60);
     statusPic->setPixmap(QPixmap("../img/sys_status.png"));
     statusPic->setStyleSheet("background: transparent;");
     statusPic->setAlignment(Qt::AlignCenter);
