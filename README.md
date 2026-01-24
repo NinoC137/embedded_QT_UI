@@ -8,6 +8,26 @@
 
 2. 屏幕下半部分分为两块, 左边是一个按键+字符串,显示wifi信息;右边是一个按键+字符串, 显示系统信息与ip地址
 
+## 编译方法
+
+1. 在宿主机编译测试
+
+```bash
+mkdir build 
+cd build
+cmake ..
+make
+```
+
+2. 在宿主机交叉编译
+
+```bash
+mkdir rv_build
+cd rv_build
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../arm-toolchain.cmake
+make
+```
+
 ## 系统依赖
 
 1. QT5.15.13
