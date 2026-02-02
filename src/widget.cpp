@@ -21,16 +21,16 @@ Widget::Widget(QWidget *parent)
    
    auto *mainGrid = new QGridLayout(mainPage);
    
-   auto *gif = new gifPlayer(stack);
-   stack->addWidget(gif); // index 0
-   stack->setCurrentWidget(gif);
+//    auto *gif = new gifPlayer(stack);
+//    stack->addWidget(gif); // index 0
+//    stack->setCurrentWidget(gif);
 
-   connect(gif, &gifPlayer::playFinished, this, [stack, gif, mainPage]() {
-        // qDebug() << "GIF play finished, switch to main page.";
-        stack->setCurrentWidget(mainPage);
-        stack->removeWidget(gif);
-        gif->deleteLater();
-   });
+//    connect(gif, &gifPlayer::playFinished, this, [stack, gif, mainPage]() {
+//         // qDebug() << "GIF play finished, switch to main page.";
+//         stack->setCurrentWidget(mainPage);
+//         stack->removeWidget(gif);
+//         gif->deleteLater();
+//    });
 
     /* =======================关闭程序定时重启==============================*/
     QString buttonStyle =
