@@ -139,5 +139,10 @@ void Widget::onReboot()
         QStringList() << "-c" << QString("sleep 1 && exec %1 </dev/null >/dev/null 2>&1").arg(appPath)
     );
 
+    QString platform = QGuiApplication::platformName();
+    if(platform == "linuxfb"){
+        QProcess::startDetached("bash", QStringList() << "-c" << QString("cat /dev/zero > /dev/fb0"));
+    }
+
     qApp->quit();
 }
