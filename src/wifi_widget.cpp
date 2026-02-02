@@ -45,14 +45,14 @@ void WiFi_Widget::updateWiFiStatus(){
         lb_wifiip->setStyleSheet("color= #ffffff; background: transparent; border: none;");
     }else{
         lb_wifiname->setText(ssid);
-        lb_wifiname->setStyleSheet("color: #f4ea2a; background: transparent; border: none; font-size: 16px;");
+        lb_wifiname->setStyleSheet("color:rgb(0, 0, 0); background: transparent; border: none; font-size: 16px;");
         
         if(ip.isEmpty()){
             lb_wifiip->setText("No ip");
-            lb_wifiip->setStyleSheet("color: #f4ea2a; background: transparent; border: none;");
+            lb_wifiip->setStyleSheet("color:rgb(0, 0, 0); background: transparent; border: none;");
         }else{
             lb_wifiip->setText(ip);
-            lb_wifiip->setStyleSheet("color: #f4ea2a; background: transparent; border: none; font-size: 14px;");
+            lb_wifiip->setStyleSheet("color:rgb(0, 0, 0); background: transparent; border: none; font-size: 14px;");
         }
     }
 }
@@ -91,12 +91,12 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
     wifiname = new QLabel(this);
     wifiname->setGeometry(45, 90, 120, 40); 
     wifiname->setAlignment(Qt::AlignCenter);
-    wifiname->setStyleSheet("color: #f4ea2a; background: transparent; font-size: 12px;");
+    wifiname->setStyleSheet("color:rgb(0, 0, 0); background: transparent; font-size: 12px;");
 
     wifiip = new QLabel(this);
     wifiip->setGeometry(45, 120, 121, 41);
     wifiip->setAlignment(Qt::AlignCenter);
-    wifiip->setStyleSheet("color: #A9A8A8; background: transparent; font-size: 10px;");
+    wifiip->setStyleSheet("color:rgb(0, 0, 0); background: transparent; font-size: 10px;");
 
     disableMouse(wifiname);
     disableMouse(wifiip);
