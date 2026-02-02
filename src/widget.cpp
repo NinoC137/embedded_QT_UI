@@ -134,12 +134,16 @@ void Widget::onReboot()
 {
     QString appPath = QCoreApplication::applicationFilePath();
 
-    QProcess::startDetached(
-        "bash",
-        QStringList() << "-c" << QString("sleep 1 && exec %1 </dev/null >/dev/null 2>&1").arg(appPath)
-    );
-
     QString platform = QGuiApplication::platformName();
+
+    //宿主机上测试重启,目标机(目前目标机只使用了linuxfb驱动平台)不运行这部分代码
+    if(platform != "linuxfb"){
+        QProcess::startDetached(
+            "bash",
+            QStringList() << "-c" << QString("sleep 1 && exec %1 </dev/null >/dev/null 2>&1").arg(appPath)
+       );
+    }
+
     if(platform == "linuxfb"){
         QProcess::startDetached("bash", QStringList() << "-c" << QString("cat /dev/zero > /dev/fb0"));
     }
