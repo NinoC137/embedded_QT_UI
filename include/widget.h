@@ -33,6 +33,7 @@
 #include "sys_status_widget.h"
 #include "time_widget.h"
 #include "wifiset.h"
+#include "media_player.h"
 
 class QLabel;
 class QPushButton;

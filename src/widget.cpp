@@ -11,15 +11,27 @@ Widget::Widget(QWidget *parent)
     /* ========= Stack ========= */
     auto *stack = new QStackedWidget(this);
 
-    /* =========================================================
-     *  Page 0 : 主界面（Time + WiFi + State）
-     * ========================================================= */
-    QWidget *mainPage = new QWidget(stack);
-    mainPage->setAutoFillBackground(true);
-    mainPage->setStyleSheet("background-color: #0D0D0D;");
-
-    auto *mainGrid = new QGridLayout(mainPage);
     
+    /* =========================================================
+    *  Page 0 : 主界面（Time + WiFi + State）
+    * ========================================================= */
+   QWidget *mainPage = new QWidget(stack);
+   mainPage->setAutoFillBackground(true);
+   mainPage->setStyleSheet("background-color: #0D0D0D;");
+   
+   auto *mainGrid = new QGridLayout(mainPage);
+   
+   auto *gif = new gifPlayer(stack);
+   stack->addWidget(gif); // index 0
+   stack->setCurrentWidget(gif);
+
+   connect(gif, &gifPlayer::playFinished, this, [stack, gif, mainPage]() {
+        // qDebug() << "GIF play finished, switch to main page.";
+        stack->setCurrentWidget(mainPage);
+        stack->removeWidget(gif);
+        gif->deleteLater();
+   });
+
     /* =======================关闭程序定时重启==============================*/
     QString buttonStyle =
         "background-color:rgb(203, 40, 40);"
@@ -70,7 +82,7 @@ Widget::Widget(QWidget *parent)
     /* ========= Stack 注册 ========= */
     stack->addWidget(mainPage);      // index 0
     stack->addWidget(wifiSetWidget); // index 1
-    stack->setCurrentWidget(mainPage);
+    // stack->setCurrentWidget(mainPage);
 
     /* ========= 顶层布局 ========= */
     auto *rootLayout = new QVBoxLayout(this);
@@ -124,7 +136,7 @@ void Widget::onReboot()
 
     QProcess::startDetached(
         "bash",
-        QStringList() << "-c" << QString("sleep 1 && exec %1").arg(appPath)
+        QStringList() << "-c" << QString("sleep 1 && exec %1 </dev/null >/dev/null 2>&1").arg(appPath)
     );
 
     qApp->quit();

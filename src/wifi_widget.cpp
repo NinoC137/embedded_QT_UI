@@ -77,10 +77,13 @@ WiFi_Widget::WiFi_Widget(QWidget* parent){
         "font-size: 24px;"
         "padding: 10px;"
     );
+    
+    QString exeDir = QCoreApplication::applicationDirPath();
+    QString imgPath = exeDir + "/img/wifi.png";
 
     wifipic = new QLabel(this);
     wifipic->setGeometry(45, 52, 60, 60);
-    wifipic->setPixmap(QPixmap("../img/wifi.png"));
+    wifipic->setPixmap(QPixmap(imgPath));
     wifipic->setFixedSize(40, 40);
     wifipic->setAlignment(Qt::AlignCenter);
     wifipic->setAttribute(Qt::WA_TransparentForMouseEvents);

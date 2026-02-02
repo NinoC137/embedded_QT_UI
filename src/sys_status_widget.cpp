@@ -89,10 +89,13 @@ Sys_Sta_Widget::Sys_Sta_Widget(QWidget *parent)
         "padding: 10px;"
     );
 
+    QString exeDir = QCoreApplication::applicationDirPath();
+    QString imgPath = exeDir + "/img/sys_status.png";
+
     // ===== 状态图标 =====
     statusPic = new QLabel(this);
     statusPic->setGeometry(45, 45, 60, 60);
-    statusPic->setPixmap(QPixmap("../img/sys_status.png"));
+    statusPic->setPixmap(QPixmap(imgPath));
     statusPic->setStyleSheet("background: transparent;");
     statusPic->setAlignment(Qt::AlignCenter);
 
