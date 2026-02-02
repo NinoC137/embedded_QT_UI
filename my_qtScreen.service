@@ -5,6 +5,9 @@ After=systemd-user-sessions.service
 
 [Service]
 Type=idle
+
+ExecStartPre=/root/boot_img
+
 ExecStart=/root/wifi_basic -platform linuxfb 
 Restart=always
 RestartSec=10
